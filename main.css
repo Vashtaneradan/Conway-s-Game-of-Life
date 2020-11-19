@@ -1,13 +1,53 @@
+:root {
+  --grid-cols: 1;
+  --grid-rows: 1;
+}
+
 .grid-container {
+  border: 1px solid black;
   display: grid;
-  grid-template-columns: repeat(10, 50px);
-  grid-template-rows: repeat(10, 50px);
+  grid-template-rows: repeat(var(--grid-rows), 50px);
+  grid-template-columns: repeat(var(--grid-cols), 50px);
 }
 
 .cell {
   background-color: grey;
+  border: 1px solid black;
 }
 
 .cell:hover {
-  background-color: dimgrey;
+  background-color: #333333 !important;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.button {
+  width: 250px;
+  background-color: mediumseagreen;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px;
+  cursor: pointer;
+  transition-duration: 0.4s;
+}
+
+.button:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.button:active:visited {
+  border: none;
+}
+
+.ticker {
+  font-size: 24px;
+  text-align: center;
 }

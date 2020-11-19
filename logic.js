@@ -1,33 +1,36 @@
-let cells = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-];
+const row = 10;
+const col = 10;
 
-let nextGen = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-];
+let cells = JSON.parse(JSON.stringify(Array(col).fill(Array(row).fill(0))));
+let nextGen = JSON.parse(JSON.stringify(Array(col).fill(Array(row).fill(0))));
 
-let generation = 1;
+let generation = 0;
 let interval;
+const container = document.querySelector('.grid-container');
 
-colorizeAliveCells(cells);
+function makeRows(rows, cols) {
+  container.style.setProperty('--grid-rows', rows);
+  container.style.setProperty('--grid-cols', cols);
+  for (let col = 0; col < cols; col++) {
+    for (let row = 0; row < rows; row++) {
+      let cell = document.createElement("div");
+      cell.className = `cell cell--${col}${row}`;
+      container.appendChild(cell);
+    }
+  }
+  colorizeCells(cells);
+}
+makeRows(row, col);
+
+// user cell input
+for (let cols = 0; cols < col; cols++) {
+  for (let rows = 0; rows < row; rows++) {
+    document.querySelector(`.cell--${cols}${rows}`).addEventListener('click', () => {
+      document.querySelector(`.cell--${cols}${rows}`).style["background-color"] = "mediumseagreen";
+      cells[cols][rows] = 1;
+    })
+  }
+}
 
 function ticker() {
   interval = setInterval(runLivecycle, 800);
@@ -35,111 +38,100 @@ function ticker() {
 
 function stopTicker() {
   clearInterval(interval);
-  // generation = 1;
-  // document.querySelector(".ticker__generation").innerHTML = generation.toString();
 }
 
 function runLivecycle() {
+  console.table(cells);
   clearAll(nextGen);
   document.querySelector(".ticker__generation").innerHTML = generation.toString();
   generation++;
 
-  for (let col = 0; col < cells.length; col++) {
-    for (let row = 0; row < cells[col].length; row++) {
-      let neighbourCount = findNeighbours(col, row);
+  console.table(cells);
 
-      if (cells[col][row] === 0) {
+  for (let cols = 0; cols < col; cols++) {
+    for (let rows = 0; rows < row; rows++) {
+      let neighbourCount = findNeighbours(cols, rows);
+
+      if (cells[cols][rows] === 0) {
         if (neighbourCount === 3) {
-          nextGen[col][row] = 1;
+          nextGen[cols][rows] = 1;
         }
       } else {
         if (neighbourCount < 2 || neighbourCount > 3) {
-          nextGen[col][row] = 0;
+          nextGen[cols][rows] = 0;
         } else if (neighbourCount === 2 || neighbourCount === 3) {
-          nextGen[col][row] = 1;
+          nextGen[cols][rows] = 1;
         }
       }
 
     }
   }
-  colorizeAliveCells(nextGen);
+  console.log(nextGen);
+  colorizeCells(nextGen);
   cells = JSON.parse(JSON.stringify(nextGen));
 }
 
 // 012
 // 3x4
 // 567
-function findNeighbours(col, row) {
+function findNeighbours(cols, rows) {
   let neighbourCount = 0;
   //0
-  if (col !== 0 && row !== 0 && cells[col - 1][row - 1] === 1) {
+  if (cols !== 0 && rows !== 0 && cells[cols - 1][rows - 1] === 1) {
     neighbourCount++;
   }
   //1
-  if (col !== 0 && cells[col - 1][row] === 1) {
+  if (cols !== 0 && cells[cols - 1][rows] === 1) {
     neighbourCount++;
   }
   //2
-  if (col !== 0 && row !== cells.length - 1 && cells[col - 1][row + 1] === 1) {
+  if (cols !== 0 && rows !== row - 1 && cells[cols - 1][rows + 1] === 1) {
     neighbourCount++;
   }
   //3
-  if (row !== 0 && cells[col][row - 1] === 1) {
+  if (rows !== 0 && cells[cols][rows - 1] === 1) {
     neighbourCount++;
   }
   //4
-  if (row !== cells.length - 1 && cells[col][row + 1] === 1) {
+  if (rows !== row - 1 && cells[cols][rows + 1] === 1) {
     neighbourCount++;
   }
   //5
-  if (col !== cells.length - 1 && row !== 0 && cells[col + 1][row - 1] === 1) {
+  if (cols !== col - 1 && rows !== 0 && cells[cols + 1][rows - 1] === 1) {
     neighbourCount++;
   }
   //6
-  if (col !== cells.length - 1 && cells[col + 1][row] === 1) {
+  if (cols !== col - 1 && cells[cols + 1][rows] === 1) {
     neighbourCount++;
   }
   //7
-  if (col !== cells.length - 1 && row !== cells.length - 1 && cells[col + 1][row + 1] === 1) {
+  if (cols !== col - 1 && rows !== row - 1 && cells[cols + 1][rows + 1] === 1) {
     neighbourCount++;
   }
   return neighbourCount;
 }
 
-function colorizeAliveCells(cellArray) {
-  for (let col = 0; col < cellArray.length; col++) {
-    for (let row = 0; row < cellArray[col].length; row++) {
-      if (cellArray[col][row] === 1) {
-        document.querySelector(`.cell--${col}${row}`).style["background-color"] = "orange";
+function colorizeCells(cellArray) {
+  for (let cols = 0; cols < col; cols++) {
+    for (let rows = 0; rows < row; rows++) {
+      if (cellArray[cols][rows] === 1) {
+        document.querySelector(`.cell--${cols}${rows}`).style["background-color"] = "mediumseagreen";
       } else {
-        document.querySelector(`.cell--${col}${row}`).style["background-color"] = "grey";
+        document.querySelector(`.cell--${cols}${rows}`).style["background-color"] = "grey";
       }
     }
   }
 }
 
-function clearAll(cellArray){
-  cellArray = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ];
-  colorizeAliveCells(cellArray);
+function clearAll(cellArray) {
+  cellArray = Array(col).fill(Array(row).fill(0));
+  colorizeCells(cellArray);
 }
 
-// user cell input
-for (let col = 0; col < cells.length; col++) {
-  for (let row = 0; row < cells[col].length; row++) {
-      document.querySelector(`.cell--${col}${row}`).addEventListener('click', () => {
-        document.querySelector(`.cell--${col}${row}`).style["background-color"] = "orange";
-        cells[col][row] = 1;
-    })
-  }
+
+function clearGame() {
+  clearAll(cells);
+  clearAll(nextGen);
+  generation = 0;
+  document.querySelector(".ticker__generation").innerHTML = generation.toString();
 }
