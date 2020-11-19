@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Game of Life</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+<div class="grid-container">
+  <div class="cell cell--00"></div><div class="cell cell--01"></div><div class="cell cell--02"></div><div class="cell cell--03"></div><div class="cell cell--04"></div><div class="cell cell--05"></div><div class="cell cell--06"></div><div class="cell cell--07"></div><div class="cell cell--08"></div><div class="cell cell--09"></div>
+  <div class="cell cell--10"></div><div class="cell cell--11"></div><div class="cell cell--12"></div><div class="cell cell--13"></div><div class="cell cell--14"></div><div class="cell cell--15"></div><div class="cell cell--16"></div><div class="cell cell--17"></div><div class="cell cell--18"></div><div class="cell cell--19"></div>
+  <div class="cell cell--20"></div><div class="cell cell--21"></div><div class="cell cell--22"></div><div class="cell cell--23"></div><div class="cell cell--24"></div><div class="cell cell--25"></div><div class="cell cell--26"></div><div class="cell cell--27"></div><div class="cell cell--28"></div><div class="cell cell--29"></div>
+  <div class="cell cell--30"></div><div class="cell cell--31"></div><div class="cell cell--32"></div><div class="cell cell--33"></div><div class="cell cell--34"></div><div class="cell cell--35"></div><div class="cell cell--36"></div><div class="cell cell--37"></div><div class="cell cell--38"></div><div class="cell cell--39"></div>
+  <div class="cell cell--40"></div><div class="cell cell--41"></div><div class="cell cell--42"></div><div class="cell cell--43"></div><div class="cell cell--44"></div><div class="cell cell--45"></div><div class="cell cell--46"></div><div class="cell cell--47"></div><div class="cell cell--48"></div><div class="cell cell--49"></div>
+  <div class="cell cell--50"></div><div class="cell cell--51"></div><div class="cell cell--52"></div><div class="cell cell--53"></div><div class="cell cell--54"></div><div class="cell cell--55"></div><div class="cell cell--56"></div><div class="cell cell--57"></div><div class="cell cell--58"></div><div class="cell cell--59"></div>
+  <div class="cell cell--60"></div><div class="cell cell--61"></div><div class="cell cell--62"></div><div class="cell cell--63"></div><div class="cell cell--64"></div><div class="cell cell--65"></div><div class="cell cell--66"></div><div class="cell cell--67"></div><div class="cell cell--68"></div><div class="cell cell--69"></div>
+  <div class="cell cell--70"></div><div class="cell cell--71"></div><div class="cell cell--72"></div><div class="cell cell--73"></div><div class="cell cell--74"></div><div class="cell cell--75"></div><div class="cell cell--76"></div><div class="cell cell--77"></div><div class="cell cell--78"></div><div class="cell cell--79"></div>
+  <div class="cell cell--80"></div><div class="cell cell--81"></div><div class="cell cell--82"></div><div class="cell cell--83"></div><div class="cell cell--84"></div><div class="cell cell--85"></div><div class="cell cell--86"></div><div class="cell cell--87"></div><div class="cell cell--88"></div><div class="cell cell--89"></div>
+  <div class="cell cell--90"></div><div class="cell cell--91"></div><div class="cell cell--92"></div><div class="cell cell--93"></div><div class="cell cell--94"></div><div class="cell cell--95"></div><div class="cell cell--96"></div><div class="cell cell--97"></div><div class="cell cell--98"></div><div class="cell cell--99"></div>
+</div>
+<button onclick="ticker()">Start</button>
+<button onclick="stopTicker()">Stop</button>
+<button onclick="clearAll(cells)">clear all</button>
+<div class="ticker">Generations: <span class="ticker__generation">0</span></div>
+<script src="logic.js"></script>
+</body>
+</html>
