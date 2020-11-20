@@ -6,14 +6,40 @@
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
-<div class="ticker">Generations: <span class="ticker__generation">0</span></div>
-<div class="grid-container"></div>
-<div class="buttonContainer">
-  <button class="button" onclick="ticker()">Start</button>
-  <button class="button" onclick="stopTicker()">Stop</button>
-  <button class="button" onclick="clearGame()">clear all</button>
-</div>
+<div class="main">
+  <h2 class="ticker">Generation: <span class="ticker__generation">0</span></h2>
+  <div class="grid-container"></div>
+  <div class="buttonContainer">
+    <button class="button" onclick="ticker()">Start</button>
+    <button class="button" onclick="stopTicker()">Stop</button>
+    <button class="button" onclick="clearGame()">clear all</button>
+  </div>
 
+  <div class="legend">
+    <h2>Info:</h2>
+    <div class="cells">
+      <div class="square" id="s1">dead cell</div>
+      <div class="square" id="s2">alive cell</div>
+    </div>
+
+    <div class="rules">
+      <div class="rule rule--1">
+        <h3>new cell will be born:</h3>
+        <p>alive neighbour cells = 3</p>
+      </div>
+      <div class="rule rule--2">
+        <h3>cell surwives:</h3>
+        <p>alive neighbour cells = 2 or 3</p>
+        <p>alive neighbour cells = 3</p>
+      </div>
+      <div class="rule rule--3">
+        <h3>cell dies:</h3>
+        <p>alive neighbour cells < 2 --> lonelienes</p>
+        <p>alive neighbour cells > 3 --> overpopulation</p>
+      </div>
+    </div>
+  </div>
+</div>
 <script src="logic.js"></script>
 </body>
 </html>
