@@ -34,6 +34,7 @@ function makeRows(y, x) {
   }
   colorizeCells(cells);
 }
+
 makeRows(yAxis, xAxis);
 
 // user cell input
@@ -86,38 +87,162 @@ function runLivecycle() {
 // 567
 function findNeighbours(currentRow, currentColumn) {
   let neighbourCount = 0;
-  //0
-  if (currentRow !== 0 && currentColumn !== 0 && cells[currentRow - 1][currentColumn - 1] === 1) {
+  let borders = document.querySelector('.borders').checked;
 
-    neighbourCount++;
-  }
-  //1
-  if (currentRow !== 0 && cells[currentRow - 1][currentColumn] === 1) {
-    neighbourCount++;
-  }
-  //2
-  if (currentRow !== 0 && currentColumn !== xAxis - 1 && cells[currentRow - 1][currentColumn + 1] === 1) {
-    neighbourCount++;
-  }
-  //3
-  if (currentColumn !== 0 && cells[currentRow][currentColumn - 1] === 1) {
-    neighbourCount++;
-  }
-  //4
-  if (currentColumn !== xAxis - 1 && cells[currentRow][currentColumn + 1] === 1) {
-    neighbourCount++;
-  }
-  //5
-  if (currentRow !== yAxis - 1 && currentColumn !== 0 && cells[currentRow + 1][currentColumn - 1] === 1) {
-    neighbourCount++;
-  }
-  //6
-  if (currentRow !== yAxis - 1 && cells[currentRow + 1][currentColumn] === 1) {
-    neighbourCount++;
-  }
-  //7
-  if (currentRow !== yAxis - 1 && currentColumn !== xAxis - 1 && cells[currentRow + 1][currentColumn + 1] === 1) {
-    neighbourCount++;
+  if (!borders) {
+    if (currentRow !== 0 && currentColumn !== 0 && cells[currentRow - 1][currentColumn - 1] === 1) {
+      neighbourCount++;
+    }
+    if (currentRow !== 0 && cells[currentRow - 1][currentColumn] === 1) {
+      neighbourCount++;
+    }
+    if (currentRow !== 0 && currentColumn !== xAxis - 1 && cells[currentRow - 1][currentColumn + 1] === 1) {
+      neighbourCount++;
+    }
+    if (currentColumn !== 0 && cells[currentRow][currentColumn - 1] === 1) {
+      neighbourCount++;
+    }
+    if (currentColumn !== xAxis - 1 && cells[currentRow][currentColumn + 1] === 1) {
+      neighbourCount++;
+    }
+    if (currentRow !== yAxis - 1 && currentColumn !== 0 && cells[currentRow + 1][currentColumn - 1] === 1) {
+      neighbourCount++;
+    }
+    if (currentRow !== yAxis - 1 && cells[currentRow + 1][currentColumn] === 1) {
+      neighbourCount++;
+    }
+    if (currentRow !== yAxis - 1 && currentColumn !== xAxis - 1 && cells[currentRow + 1][currentColumn + 1] === 1) {
+      neighbourCount++;
+    }
+  } else {
+    //0
+    if (currentRow === 0) {
+      if (currentColumn === 0) {
+        if (cells[yAxis - 1][xAxis - 1] === 1) {
+          neighbourCount++;
+        }
+      } else {
+        if (cells[yAxis - 1][currentColumn - 1] === 1) {
+          neighbourCount++;
+        }
+      }
+    } else {
+      if (currentColumn === 0) {
+        if (cells[currentRow - 1][xAxis - 1] === 1) {
+          neighbourCount++;
+        }
+      } else {
+        if (cells[currentRow - 1][currentColumn - 1] === 1) {
+          neighbourCount++;
+        }
+      }
+    }
+    //1
+    if (currentRow === 0) {
+      if (cells[yAxis - 1][currentColumn] === 1) {
+        neighbourCount++;
+      }
+    } else {
+      if (cells[currentRow - 1][currentColumn] === 1) {
+        neighbourCount++;
+      }
+    }
+    //2
+    if (currentRow === 0) {
+      if (currentColumn === xAxis - 1) {
+        if (cells[yAxis - 1][0] === 1) {
+          neighbourCount++;
+        }
+      } else {
+        if (cells[yAxis - 1][currentColumn + 1] === 1) {
+          neighbourCount++;
+        }
+      }
+    } else {
+      if (currentColumn === xAxis - 1) {
+        if (cells[currentRow - 1][0] === 1) {
+          neighbourCount++;
+        }
+      } else {
+        if (cells[currentRow - 1][currentColumn + 1] === 1) {
+          neighbourCount++;
+        }
+      }
+    }
+    //3
+    if (currentColumn === 0) {
+      if (cells[currentRow][xAxis - 1] === 1) {
+        neighbourCount++;
+      }
+    } else {
+      if (cells[currentRow][currentColumn - 1] === 1) {
+        neighbourCount++;
+      }
+    }
+    //4
+    if (currentColumn === xAxis - 1) {
+      if (cells[currentRow][0] === 1) {
+        neighbourCount++;
+      }
+    } else {
+      if (cells[currentRow][currentColumn + 1] === 1) {
+        neighbourCount++;
+      }
+    }
+    //5
+    if (currentRow === yAxis - 1) {
+      if (currentColumn === 0) {
+        if (cells[0][xAxis - 1] === 1) {
+          neighbourCount++;
+        }
+      } else {
+        if (cells[0][currentColumn - 1] === 1) {
+          neighbourCount++;
+        }
+      }
+    } else {
+      if (currentColumn === 0) {
+        if (cells[currentRow + 1][xAxis - 1] === 1) {
+          neighbourCount++;
+        }
+      } else {
+        if (cells[currentRow + 1][currentColumn - 1] === 1) {
+          neighbourCount++;
+        }
+      }
+    }
+    //6
+    if (currentRow === yAxis - 1) {
+      if (cells[0][currentColumn] === 1) {
+        neighbourCount++;
+      }
+    } else {
+      if (cells[currentRow + 1][currentColumn] === 1) {
+        neighbourCount++;
+      }
+    }
+    //7
+    if (currentRow === yAxis - 1) {
+      if (currentColumn === xAxis - 1) {
+        if (cells[0][0] === 1) {
+          neighbourCount++;
+        }
+      } else {
+        if (cells[0][currentColumn + 1] === 1) {
+          neighbourCount++;
+        }
+      }
+    } else {
+      if (currentColumn === xAxis - 1) {
+        if (cells[currentRow + 1][0] === 1) {
+          neighbourCount++;
+        }
+      } else {
+        if (cells[currentRow + 1][currentColumn + 1] === 1) {
+          neighbourCount++;
+        }
+      }
+    }
   }
   return neighbourCount;
 }
