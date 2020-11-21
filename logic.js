@@ -1,33 +1,47 @@
-const row = 10;
-const col = 10;
-
-let cells = JSON.parse(JSON.stringify(Array(col).fill(Array(row).fill(0))));
-let nextGen = JSON.parse(JSON.stringify(Array(col).fill(Array(row).fill(0))));
+let xAxis = 20;
+let yAxis = 20;
+let cells = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
+let nextGen = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
 
 let generation = 0;
 let interval;
 const container = document.querySelector('.grid-container');
 
-function makeRows(rows, cols) {
-  container.style.setProperty('--grid-rows', rows);
-  container.style.setProperty('--grid-cols', cols);
-  for (let col = 0; col < cols; col++) {
-    for (let row = 0; row < rows; row++) {
+function setGrid() {
+  for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
+    for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
+      let cell = document.querySelector(`.cell--${rowCounter}${columnCounter}`);
+      cell.remove();
+    }
+  }
+  xAxis = parseInt(document.querySelector('#quantityX').value);
+  yAxis = parseInt(document.querySelector('#quantityY').value);
+
+  cells = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
+  nextGen = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
+  makeRows(yAxis, xAxis);
+}
+
+function makeRows(y, x) {
+  container.style.setProperty('--grid-rows', y);
+  container.style.setProperty('--grid-cols', x);
+  for (let rowCounter = 0; rowCounter < y; rowCounter++) {
+    for (let columnCounter = 0; columnCounter < x; columnCounter++) {
       let cell = document.createElement("div");
-      cell.className = `cell cell--${col}${row}`;
+      cell.className = `cell cell--${rowCounter}${columnCounter}`;
       container.appendChild(cell);
     }
   }
   colorizeCells(cells);
 }
-makeRows(row, col);
+makeRows(yAxis, xAxis);
 
 // user cell input
-for (let cols = 0; cols < col; cols++) {
-  for (let rows = 0; rows < row; rows++) {
-    document.querySelector(`.cell--${cols}${rows}`).addEventListener('click', () => {
-      document.querySelector(`.cell--${cols}${rows}`).style["background-color"] = "mediumseagreen";
-      cells[cols][rows] = 1;
+for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
+  for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
+    document.querySelector(`.cell--${rowCounter}${columnCounter}`).addEventListener('click', () => {
+      document.querySelector(`.cell--${rowCounter}${columnCounter}`).style["background-color"] = "mediumseagreen";
+      cells[rowCounter][columnCounter] = 1;
     })
   }
 }
@@ -41,32 +55,28 @@ function stopTicker() {
 }
 
 function runLivecycle() {
-  console.table(cells);
-  clearAll(nextGen);
+  clearArray(nextGen);
   document.querySelector(".ticker__generation").innerHTML = generation.toString();
   generation++;
 
-  console.table(cells);
+  for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
+    for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
+      let neighbourCount = findNeighbours(rowCounter, columnCounter);
 
-  for (let cols = 0; cols < col; cols++) {
-    for (let rows = 0; rows < row; rows++) {
-      let neighbourCount = findNeighbours(cols, rows);
-
-      if (cells[cols][rows] === 0) {
+      if (cells[rowCounter][columnCounter] === 0) {
         if (neighbourCount === 3) {
-          nextGen[cols][rows] = 1;
+          nextGen[rowCounter][columnCounter] = 1;
         }
       } else {
         if (neighbourCount < 2 || neighbourCount > 3) {
-          nextGen[cols][rows] = 0;
+          nextGen[rowCounter][columnCounter] = 0;
         } else if (neighbourCount === 2 || neighbourCount === 3) {
-          nextGen[cols][rows] = 1;
+          nextGen[rowCounter][columnCounter] = 1;
         }
       }
 
     }
   }
-  console.log(nextGen);
   colorizeCells(nextGen);
   cells = JSON.parse(JSON.stringify(nextGen));
 }
@@ -74,64 +84,64 @@ function runLivecycle() {
 // 012
 // 3x4
 // 567
-function findNeighbours(cols, rows) {
+function findNeighbours(currentRow, currentColumn) {
   let neighbourCount = 0;
   //0
-  if (cols !== 0 && rows !== 0 && cells[cols - 1][rows - 1] === 1) {
+  if (currentRow !== 0 && currentColumn !== 0 && cells[currentRow - 1][currentColumn - 1] === 1) {
     neighbourCount++;
   }
   //1
-  if (cols !== 0 && cells[cols - 1][rows] === 1) {
+  if (currentRow !== 0 && cells[currentRow - 1][currentColumn] === 1) {
     neighbourCount++;
   }
   //2
-  if (cols !== 0 && rows !== row - 1 && cells[cols - 1][rows + 1] === 1) {
+  if (currentRow !== 0 && currentColumn !== xAxis - 1 && cells[currentRow - 1][currentColumn + 1] === 1) {
     neighbourCount++;
   }
   //3
-  if (rows !== 0 && cells[cols][rows - 1] === 1) {
+  if (currentColumn !== 0 && cells[currentRow][currentColumn - 1] === 1) {
     neighbourCount++;
   }
   //4
-  if (rows !== row - 1 && cells[cols][rows + 1] === 1) {
+  if (currentColumn !== xAxis - 1 && cells[currentRow][currentColumn + 1] === 1) {
     neighbourCount++;
   }
   //5
-  if (cols !== col - 1 && rows !== 0 && cells[cols + 1][rows - 1] === 1) {
+  if (currentRow !== yAxis - 1 && currentColumn !== 0 && cells[currentRow + 1][currentColumn - 1] === 1) {
     neighbourCount++;
   }
   //6
-  if (cols !== col - 1 && cells[cols + 1][rows] === 1) {
+  if (currentRow !== yAxis - 1 && cells[currentRow + 1][currentColumn] === 1) {
     neighbourCount++;
   }
   //7
-  if (cols !== col - 1 && rows !== row - 1 && cells[cols + 1][rows + 1] === 1) {
+  if (currentRow !== yAxis - 1 && currentColumn !== xAxis - 1 && cells[currentRow + 1][currentColumn + 1] === 1) {
     neighbourCount++;
   }
   return neighbourCount;
 }
 
 function colorizeCells(cellArray) {
-  for (let cols = 0; cols < col; cols++) {
-    for (let rows = 0; rows < row; rows++) {
-      if (cellArray[cols][rows] === 1) {
-        document.querySelector(`.cell--${cols}${rows}`).style["background-color"] = "mediumseagreen";
+  for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
+    for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
+      if (cellArray[rowCounter][columnCounter] === 1) {
+        document.querySelector(`.cell--${rowCounter}${columnCounter}`).style["background-color"] = "mediumseagreen";
       } else {
-        document.querySelector(`.cell--${cols}${rows}`).style["background-color"] = "grey";
+        document.querySelector(`.cell--${rowCounter}${columnCounter}`).style["background-color"] = "grey";
       }
     }
   }
 }
 
-function clearAll(cellArray) {
-  cellArray = Array(col).fill(Array(row).fill(0));
+function clearArray(cellArray) {
+  cellArray = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
   colorizeCells(cellArray);
 }
 
-
 function clearGame() {
-  clearAll(cells);
-  clearAll(nextGen);
+  stopTicker();
+  clearArray(cells);
+  clearArray(nextGen);
   generation = 0;
   document.querySelector(".ticker__generation").innerHTML = generation.toString();
 }

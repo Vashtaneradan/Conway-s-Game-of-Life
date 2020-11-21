@@ -14,22 +14,29 @@ body {
   margin: 20px;
 }
 
+.game {
+  padding: 20px;
+  box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+}
+
 .grid-container {
   border: 1px solid black;
   display: grid;
-  grid-template-rows: repeat(var(--grid-rows), 50px);
-  grid-template-columns: repeat(var(--grid-cols), 50px);
+  grid-template-rows: repeat(var(--grid-rows), 1fr);
+  grid-template-columns: repeat(var(--grid-cols), 1fr);
   width: fit-content;
   margin: 0 auto;
 }
 
 .cell {
+  min-width: 20px;
+  min-height: 20px;
   background-color: grey;
   border: 1px solid black;
 }
 
 .cell:hover {
-  background-color: #333333 !important;
+  background-color: #666666 !important;
 }
 
 .buttonContainer {
@@ -58,6 +65,45 @@ body {
 
 .button:active:visited {
   border: none;
+}
+
+.gridSizeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+}
+
+form {
+  margin: 10px;
+}
+
+.counter {
+  margin: 10px;
+}
+
+.quantityX, .quantityY {
+  margin: 10px;
+  padding: 5px;
+}
+
+input {
+  border: 1px solid black;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.number {
+  padding: 10px 20px;
 }
 
 .ticker {
