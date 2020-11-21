@@ -3,37 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <title>Game of Life</title>
+  <link rel="icon" type="image/png" href="favicon.ico">
   <link rel="stylesheet" href="main.css">
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
 <div class="main">
   <div class="game">
     <h2 class="ticker">Generation: <span class="ticker__generation">0</span></h2>
     <div class="grid-container"></div>
+    <div class="charts">
+      <div id="piechart"></div>
+      <div id="linechart"></div>
+    </div>
     <div class="buttonContainer">
       <button class="button" onclick="ticker()">Start</button>
       <button class="button" onclick="stopTicker()">Stop</button>
       <button class="button" onclick="clearGame()">clear all</button>
     </div>
+  </div>
 
+  <div class="legend">
+    <h2>Settings:</h2>
     <div class="gridSizeContainer">
       <p>Game with endless grid:</p>
       <div class="button__switch">
         <label class="switch">
           <input class="borders" type="checkbox">
-          <span class="slider round"></span>
+          <span class="onOff round"></span>
         </label>
       </div>
-      <form>
-        <div class="counter">
-          <label for="quantityX" class="quantityX">number of squares Y (between 5 and 100): </label>
-          <input type="number" class="number" id="quantityX" name="quantityX" min="5" max="100">
-        </div>
-        <div class="counter">
-          <label for="quantityY" class="quantityY">number of squares X (between 5 and 100): </label>
-          <input type="number" class="number" id="quantityY" name="quantityY" min="5" max="100">
-        </div>
-      </form>
+      <div class="slideContainer">
+        <p>Number of columns: <span id="columnAmount"></span></p>
+        <input type="range" min="4" max="50" value="36" class="slider" id="columnRange">
+        <p>Number of rows: <span id="rowAmount"></span></p>
+        <input type="range" min="4" max="50" value="10" class="slider" id="rowRange">
+      </div>
       <button class="button" onclick="setGrid()">generate new grid</button>
     </div>
   </div>
@@ -52,13 +57,13 @@
       </div>
       <div class="rule rule--2">
         <h3>cell surwives:</h3>
-        <p>alive neighbour cells = 2 or 3</p>
+        <p>alive neighbour cells = 2</p>
         <p>alive neighbour cells = 3</p>
       </div>
       <div class="rule rule--3">
         <h3>cell dies:</h3>
-        <p>alive neighbour cells < 2 --> lonelienes</p>
-        <p>alive neighbour cells > 3 --> overpopulation</p>
+        <p>alive neighbour cells < 2 ➡ lonelienes</p>
+        <p>alive neighbour cells > 3 ➡ overpopulation</p>
       </div>
     </div>
   </div>

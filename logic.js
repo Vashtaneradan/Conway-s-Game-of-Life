@@ -1,21 +1,37 @@
-let xAxis = 20;
-let yAxis = 20;
+let xAxis = 36;
+let yAxis = 10;
 let cells = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
 let nextGen = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
+let dead = 0;
+let alive = 0;
 
 let generation = 0;
 let interval;
 const container = document.querySelector('.grid-container');
 
+// Load google charts
+google.charts.load('current', {'packages': ['corechart']});
+let googleChartLoaded = false;
+let historydata;
+google.charts.setOnLoadCallback(() => {
+  googleChartLoaded = true;
+  historydata = new google.visualization.DataTable();
+  historydata.addColumn('number', 'Generation');
+  historydata.addColumn('number', 'cells alive');
+  historydata.addColumn('number', 'cells dead');
+});
+
 function setGrid() {
+  stopTicker();
+
   for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
     for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
       let cell = document.querySelector(`.cell--${rowCounter}-${columnCounter}`);
       cell.remove();
     }
   }
-  xAxis = parseInt(document.querySelector('#quantityX').value);
-  yAxis = parseInt(document.querySelector('#quantityY').value);
+  xAxis = parseInt(document.querySelector('#columnRange').value);
+  yAxis = parseInt(document.querySelector('#rowRange').value);
 
   cells = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
   nextGen = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
@@ -33,19 +49,20 @@ function makeRows(y, x) {
     }
   }
   colorizeCells(cells);
+
+  // user cell input
+  for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
+    for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
+      document.querySelector(`.cell--${rowCounter}-${columnCounter}`).addEventListener('click', () => {
+        document.querySelector(`.cell--${rowCounter}-${columnCounter}`).style["background-color"] = "mediumseagreen";
+        cells[rowCounter][columnCounter] = cells[rowCounter][columnCounter] ? 0 : 1;
+        colorizeCells(cells);
+      })
+    }
+  }
 }
 
 makeRows(yAxis, xAxis);
-
-// user cell input
-for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
-  for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
-    document.querySelector(`.cell--${rowCounter}-${columnCounter}`).addEventListener('click', () => {
-      document.querySelector(`.cell--${rowCounter}-${columnCounter}`).style["background-color"] = "mediumseagreen";
-      cells[rowCounter][columnCounter] = 1;
-    })
-  }
-}
 
 function ticker() {
   interval = setInterval(runLivecycle, 800);
@@ -56,7 +73,7 @@ function stopTicker() {
 }
 
 function runLivecycle() {
-  clearArray(nextGen);
+  nextGen = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
   generation++;
   document.querySelector(".ticker__generation").innerHTML = generation.toString();
 
@@ -69,9 +86,7 @@ function runLivecycle() {
           nextGen[rowCounter][columnCounter] = 1;
         }
       } else {
-        if (neighbourCount < 2 || neighbourCount > 3) {
-          nextGen[rowCounter][columnCounter] = 0;
-        } else if (neighbourCount === 2 || neighbourCount === 3) {
+        if (neighbourCount === 2 || neighbourCount === 3) {
           nextGen[rowCounter][columnCounter] = 1;
         }
       }
@@ -79,6 +94,8 @@ function runLivecycle() {
     }
   }
   colorizeCells(nextGen);
+  historydata.addRow([generation, alive, dead]);
+  drawChart1();
   cells = JSON.parse(JSON.stringify(nextGen));
 }
 
@@ -248,26 +265,91 @@ function findNeighbours(currentRow, currentColumn) {
 }
 
 function colorizeCells(cellArray) {
+  dead = 0;
+  alive = 0;
   for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
     for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
       if (cellArray[rowCounter][columnCounter] === 1) {
         document.querySelector(`.cell--${rowCounter}-${columnCounter}`).style["background-color"] = "mediumseagreen";
+        alive++;
       } else {
         document.querySelector(`.cell--${rowCounter}-${columnCounter}`).style["background-color"] = "grey";
+        dead++;
       }
     }
   }
-}
-
-function clearArray(cellArray) {
-  cellArray = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
-  colorizeCells(cellArray);
+  drawChart(alive, dead);
 }
 
 function clearGame() {
   stopTicker();
-  clearArray(cells);
-  clearArray(nextGen);
+  cells = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
+  nextGen = JSON.parse(JSON.stringify(Array(yAxis).fill(Array(xAxis).fill(0))));
+  colorizeCells(cells);
   generation = 0;
   document.querySelector(".ticker__generation").innerHTML = generation.toString();
+  historydata.removeRows(0, historydata.getNumberOfRows());
+}
+
+// slide control
+let sliderRow = document.querySelector("#rowRange");
+let sliderColumn = document.querySelector("#columnRange");
+let outputRow = document.querySelector("#rowAmount");
+let columnAmount = document.querySelector("#columnAmount");
+
+outputRow.innerHTML = sliderRow.value;
+columnAmount.innerHTML = sliderColumn.value;
+
+sliderRow.oninput = function () {
+  outputRow.innerHTML = this.value;
+}
+
+sliderColumn.oninput = function () {
+  columnAmount.innerHTML = this.value;
+}
+
+// Draw the chart and set the chart values
+function drawChart(alive, dead) {
+  if (googleChartLoaded === false) {
+    return;
+  }
+  let currentdata = google.visualization.arrayToDataTable([
+    ['Task', 'Hours per Day'],
+    ['cells alive', alive],
+    ['cells dead', dead]
+  ]);
+
+  let options = {
+    title: 'Current cells',
+    width: 550,
+    height: 400,
+    colors: ['#3CB371', '#ec8f6e']
+  };
+
+  // Display the chart inside the <div> element
+  let chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(currentdata, options);
+}
+
+// Draw the chart and set the chart values
+function drawChart1() {
+  if (googleChartLoaded === false) {
+    return;
+  }
+  let options = {
+    title: 'History:',
+    width: 550,
+    height: 400,
+    isStacked: true,
+    vAxis: {minValue: 0, maxValue: xAxis * yAxis},
+    animation: {
+      duration: 1000,
+      easing: 'out'
+    },
+    colors: ['#3CB371', '#ec8f6e']
+  };
+
+  // Display the chart inside the <div> element with id="piechart"
+  let chart = new google.visualization.AreaChart(document.getElementById('linechart'));
+  chart.draw(historydata, options);
 }
