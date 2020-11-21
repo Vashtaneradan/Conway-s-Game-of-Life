@@ -10,7 +10,7 @@ const container = document.querySelector('.grid-container');
 function setGrid() {
   for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
     for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
-      let cell = document.querySelector(`.cell--${rowCounter}${columnCounter}`);
+      let cell = document.querySelector(`.cell--${rowCounter}-${columnCounter}`);
       cell.remove();
     }
   }
@@ -28,7 +28,7 @@ function makeRows(y, x) {
   for (let rowCounter = 0; rowCounter < y; rowCounter++) {
     for (let columnCounter = 0; columnCounter < x; columnCounter++) {
       let cell = document.createElement("div");
-      cell.className = `cell cell--${rowCounter}${columnCounter}`;
+      cell.className = `cell cell--${rowCounter}-${columnCounter}`;
       container.appendChild(cell);
     }
   }
@@ -39,8 +39,8 @@ makeRows(yAxis, xAxis);
 // user cell input
 for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
   for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
-    document.querySelector(`.cell--${rowCounter}${columnCounter}`).addEventListener('click', () => {
-      document.querySelector(`.cell--${rowCounter}${columnCounter}`).style["background-color"] = "mediumseagreen";
+    document.querySelector(`.cell--${rowCounter}-${columnCounter}`).addEventListener('click', () => {
+      document.querySelector(`.cell--${rowCounter}-${columnCounter}`).style["background-color"] = "mediumseagreen";
       cells[rowCounter][columnCounter] = 1;
     })
   }
@@ -56,8 +56,8 @@ function stopTicker() {
 
 function runLivecycle() {
   clearArray(nextGen);
-  document.querySelector(".ticker__generation").innerHTML = generation.toString();
   generation++;
+  document.querySelector(".ticker__generation").innerHTML = generation.toString();
 
   for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
     for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
@@ -88,6 +88,7 @@ function findNeighbours(currentRow, currentColumn) {
   let neighbourCount = 0;
   //0
   if (currentRow !== 0 && currentColumn !== 0 && cells[currentRow - 1][currentColumn - 1] === 1) {
+
     neighbourCount++;
   }
   //1
@@ -125,9 +126,9 @@ function colorizeCells(cellArray) {
   for (let rowCounter = 0; rowCounter < yAxis; rowCounter++) {
     for (let columnCounter = 0; columnCounter < xAxis; columnCounter++) {
       if (cellArray[rowCounter][columnCounter] === 1) {
-        document.querySelector(`.cell--${rowCounter}${columnCounter}`).style["background-color"] = "mediumseagreen";
+        document.querySelector(`.cell--${rowCounter}-${columnCounter}`).style["background-color"] = "mediumseagreen";
       } else {
-        document.querySelector(`.cell--${rowCounter}${columnCounter}`).style["background-color"] = "grey";
+        document.querySelector(`.cell--${rowCounter}-${columnCounter}`).style["background-color"] = "grey";
       }
     }
   }
